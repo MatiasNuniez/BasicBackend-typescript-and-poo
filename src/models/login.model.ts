@@ -1,13 +1,12 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
+import ILogin from "../interfaces/login.interface";
 
-export default class schemaLogin {
+export default class SchemaLogin {
 
-    public loginSchema
-
-    public model
+    private _model: mongoose.Model<ILogin>;
 
     constructor(){
-        this.loginSchema = new mongoose.Schema({
+        const loginSchema = new mongoose.Schema<ILogin>({
             user: {
                 type: String,
                 required:true,
@@ -21,6 +20,12 @@ export default class schemaLogin {
             versionKey: false,
             timestamps: true
         })
-        this.model = mongoose.model('users', this.loginSchema)
+        this._model = mongoose.model<ILogin>('users', loginSchema)
+    }
+
+    get model(): mongoose.Model<ILogin>{
+        return this._model;
     }
 }
+
+export const loginModel = new SchemaLogin().model;

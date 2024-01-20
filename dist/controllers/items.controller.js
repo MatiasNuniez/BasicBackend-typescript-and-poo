@@ -1,24 +1,70 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const items_model_1 = __importDefault(require("../models/items.model"));
-class itemController {
+exports.ItemController = void 0;
+const items_model_1 = require("../models/items.model");
+const config_1 = require("../config");
+class ItemController {
     constructor() {
-        this.model = new items_model_1.default();
+        this.key = config_1.SECRETTOKEN || '';
     }
-    getItems(req, res) {
-        const { category } = req.params;
-        this.model.model.find({ category: category }).then((data) => {
-            res.send({ data: data });
+    getItemsForCategory(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { category } = req.params;
+                yield items_model_1.iteModel.find({ category: category }).then((data) => {
+                    res.send({ data: data });
+                });
+            }
+            catch (error) {
+                res.send({ error: error });
+            }
         });
     }
     getItem(req, res) {
-        const { name } = req.params;
-        this.model.model.find({ name: name }).then((data) => {
-            res.send({ data: data });
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { name } = req.params;
+                yield items_model_1.iteModel.find({ name: name }).then((data) => {
+                    res.send({ data: data });
+                });
+            }
+            catch (error) {
+                res.send({ error: error });
+            }
+        });
+    }
+    postItem(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const realData = req.body;
+                yield items_model_1.iteModel.insertMany(realData);
+            }
+            catch (error) {
+                res.send({ error: error });
+            }
+        });
+    }
+    editItem(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { name } = req.params;
+                const update = req.body;
+                yield items_model_1.iteModel.findOneAndUpdate({ name: name }, update);
+                res.send({ success: 'Ingresado correctamente' });
+            }
+            catch (error) {
+                res.send({ error: error });
+            }
         });
     }
 }
-exports.default = itemController;
+exports.ItemController = ItemController;

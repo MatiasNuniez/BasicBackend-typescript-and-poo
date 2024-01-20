@@ -3,10 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.loginModel = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-class schemaLogin {
+class SchemaLogin {
     constructor() {
-        this.loginSchema = new mongoose_1.default.Schema({
+        const loginSchema = new mongoose_1.default.Schema({
             user: {
                 type: String,
                 required: true,
@@ -20,9 +21,11 @@ class schemaLogin {
             versionKey: false,
             timestamps: true
         });
-        this.model = mongoose_1.default.model('users', this.loginSchema);
-        this.loginSchema;
-        this.model;
+        this._model = mongoose_1.default.model('users', loginSchema);
+    }
+    get model() {
+        return this._model;
     }
 }
-exports.default = schemaLogin;
+exports.default = SchemaLogin;
+exports.loginModel = new SchemaLogin().model;

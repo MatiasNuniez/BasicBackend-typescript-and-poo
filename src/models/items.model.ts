@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
+import IItems from "../interfaces/items.interfaces";
 
-export default class schemaItems {
+export default class SchemaItems {
 
-    public itemSchema
-
-    public model
+    private _model: mongoose.Model<IItems>
 
     constructor(){
-        this.itemSchema = new mongoose.Schema({
+
+        const itemSchema = new mongoose.Schema<IItems>({
             name: {
                 type: String,
                 required: true,
@@ -32,7 +32,14 @@ export default class schemaItems {
             versionKey: false,
             timestamps: true
         })
-        this.model = mongoose.model('items', this.itemSchema)
+
+        this._model = mongoose.model<IItems>('items', itemSchema)
+    }
+
+    get model():mongoose.Model<IItems>{
+        return this._model;
     }
     
 }
+
+export const iteModel = new SchemaItems().model;

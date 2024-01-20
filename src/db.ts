@@ -3,7 +3,7 @@ require('dotenv').config()
 
 export default class connection {
 
-    private URI: any = process.env.DBURL
+    private URI: string = process.env.DBURL || ''
 
     public async initDB() {
 

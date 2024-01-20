@@ -13,7 +13,7 @@ const mongoose_1 = require("mongoose");
 require('dotenv').config();
 class connection {
     constructor() {
-        this.URI = process.env.DBURL;
+        this.URI = process.env.DBURL || '';
     }
     initDB() {
         return __awaiter(this, void 0, void 0, function* () {

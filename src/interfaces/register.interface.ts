@@ -1,4 +1,4 @@
-export default interface registerInterface{ 
+export default interface IRegister{ 
     user:string,
     password:string,
     email:string,

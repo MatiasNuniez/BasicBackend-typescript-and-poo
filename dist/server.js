@@ -4,28 +4,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const login_route_1 = require("./routes/login.route");
 const items_route_1 = require("./routes/items.route");
 const register_route_1 = require("./routes/register.route");
 const mercadopago_1 = require("mercadopago");
+const config_1 = require("./config");
 const db_1 = __importDefault(require("./db"));
 require('dotenv').config();
 class Server extends db_1.default {
     constructor() {
         super();
         this.app = (0, express_1.default)();
-        this.port = process.env.PORT;
-        this.configMercadopago = process.env.ACCESS_TOKEN_MERCADOPAGO;
+        this.port = parseInt(config_1.PORT || '3000');
+        this.configMercadopago = config_1.ACCESS_TOKEN_MERCADOPAGO;
         this.app.set('port', this.port);
         this.app.set('configMercadopago', this.configMercadopago);
         this.app.use(express_1.default.json());
+        this.app.use((0, cookie_parser_1.default)());
         this.app.use('/api', this.routers());
         this.listen();
         this.initDB();
         this.pago();
     }
     routers() {
-        return [new login_route_1.loginRouter().router, new items_route_1.itemRoute().router, new register_route_1.registerRouter().router];
+        return [new login_route_1.LoginRouter().router, new items_route_1.ItemRoute().router, new register_route_1.RegisterRouter().router];
     }
     listen() {
         this.app.listen(this.app.get('port'), () => {

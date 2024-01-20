@@ -1,13 +1,14 @@
 import { BaseRouter } from "./router";
-import loginController from "../controllers/login.controller";
+import { LoginController } from "../controllers/login.controller";
+import { AuthMiddleware } from "../middlewares/auth.middleware";
 
-export class loginRouter extends BaseRouter<loginController>{
+export class LoginRouter extends BaseRouter<LoginController, AuthMiddleware>{
 
     constructor() {
-        super(loginController)
+        super(LoginController, AuthMiddleware)
     }
 
     routes(): void {
-        this.router.get('/login', (req,res) => this.controller.getUser(req,res))
+        this.router.get('/login', (req, res) => this.controller.getUser(req, res))
     }
 }

@@ -1,31 +1,27 @@
-import schemaRegister from "../models/register.model";
-import registerInterface from "../interfaces/register.interface";
+import { registerModel } from "../models/register.model";
 import { Request, Response } from "express";
 
-export class registerController {
+export class RegisterController {
 
-    public model: schemaRegister;
-    public data: registerInterface;
+    async userRegister(req: Request, res: Response) {
 
+        try {
+            const data = req.body
 
-    constructor() {
-        this.model = new schemaRegister()
-        this.data = { user: '', password: '', email: '', admin: false }
-    }
+            await registerModel.find({ user: { $eq: data.user } }).then((dataB) => {
+                if (dataB[0] != undefined) {
+                    res.json({ error: 'EL USUARIO YA EXISTE', data: dataB })
+                } else {
+                    registerModel.insertMany(data).then((dataC) => {
+                        res.json({ data: dataC })
+                    })
+                }
 
-    userRegister(req: Request, res: Response) {
+            })
 
-        this.data = req.body
+        } catch (error) {
+            res.send({ error: error })
+        }
 
-        this.model.model.find({ user: { $eq: this.data.user } }).then((dataB) => {
-            if (dataB[0] != undefined) {
-                res.json({ error: 'EL USUARIO YA EXISTE', data: dataB })
-            } else {
-                this.model.model.insertMany(this.data).then((data) => {
-                    res.json({data: data})
-                })
-            }
-
-        })
     }
 }

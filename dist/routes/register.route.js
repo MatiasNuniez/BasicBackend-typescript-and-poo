@@ -1,14 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerRouter = void 0;
+exports.RegisterRouter = void 0;
 const router_1 = require("./router");
 const register_controller_1 = require("../controllers/register.controller");
-class registerRouter extends router_1.BaseRouter {
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+class RegisterRouter extends router_1.BaseRouter {
     constructor() {
-        super(register_controller_1.registerController);
+        super(register_controller_1.RegisterController, auth_middleware_1.AuthMiddleware);
     }
     routes() {
         this.router.post('/register', (req, res) => this.controller.userRegister(req, res));
     }
 }
-exports.registerRouter = registerRouter;
+exports.RegisterRouter = RegisterRouter;

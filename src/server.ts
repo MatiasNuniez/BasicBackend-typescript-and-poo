@@ -1,27 +1,33 @@
 import express from 'express'
-import { loginRouter } from './routes/login.route'
-import { itemRoute } from './routes/items.route'
-import { registerRouter } from './routes/register.route'
+import cookieParser from 'cookie-parser'
+import { LoginRouter } from './routes/login.route'
+import { ItemRoute } from './routes/items.route'
+import { RegisterRouter } from './routes/register.route'
 import { MercadoPagoConfig, Preference } from 'mercadopago'
+import { PORT, ACCESS_TOKEN_MERCADOPAGO } from './config'
+
 import db from './db'
 require('dotenv').config()
 
-class Server extends db{
+class Server extends db {
 
     public app: express.Application = express();
-    private port: any = process.env.PORT
-    private configMercadopago: any = process.env.ACCESS_TOKEN_MERCADOPAGO
+    private port: number = parseInt(PORT || '3000')
+    private configMercadopago: string | undefined = ACCESS_TOKEN_MERCADOPAGO
 
     constructor() {
         super()
-        
+
         this.app.set('port', this.port)
 
         this.app.set('configMercadopago', this.configMercadopago)
 
         this.app.use(express.json())
+        
+        this.app.use(cookieParser())
 
         this.app.use('/api', this.routers())
+
 
         this.listen()
 
@@ -31,8 +37,8 @@ class Server extends db{
 
     }
 
-    routers():Array<express.Router>{
-        return[new loginRouter().router, new itemRoute().router, new registerRouter().router]
+    routers(): Array<express.Router> {
+        return [new LoginRouter().router, new ItemRoute().router, new RegisterRouter().router]
     }
 
     public listen() {

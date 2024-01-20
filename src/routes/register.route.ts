@@ -1,13 +1,14 @@
 import { BaseRouter } from "./router";
-import { registerController } from "../controllers/register.controller";
+import { RegisterController } from "../controllers/register.controller";
+import { AuthMiddleware } from "../middlewares/auth.middleware";
 
-export class registerRouter extends BaseRouter<registerController>{
+export class RegisterRouter extends BaseRouter<RegisterController,AuthMiddleware>{
 
     constructor() {
-        super(registerController)
+        super(RegisterController,AuthMiddleware)
     }
 
     routes(): void {
-        this.router.post('/register', (req,res) => this.controller.userRegister(req,res))
+        this.router.post('/register', (req, res) => this.controller.userRegister(req, res))
     }
 }

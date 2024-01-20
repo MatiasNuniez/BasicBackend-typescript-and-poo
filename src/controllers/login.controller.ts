@@ -1,36 +1,37 @@
-import schemaLogin from "../models/login.model";
-import { Request, Response} from "express"
+import { loginModel } from "../models/login.model";
+import { Request, Response } from "express"
 import jsonwebtoken from "jsonwebtoken"
-import loginInteface from "../interfaces/login.interface";
+import { SECRETTOKEN } from "../config";
 
 
-export default class loginController {
+export class LoginController {
 
-    public key: any;
-    public type: loginInteface;
-    public model: schemaLogin;
+    public key: string;
 
     constructor() {
-        this.key = process.env.SECRETTOKEN
-        this.type = { user: '', password: '' }
-        this.model = new schemaLogin()
+        this.key = SECRETTOKEN || ''
     }
 
-    getUser(req: Request, res: Response) {
-        this.type.user = req.body.user
-        this.type.password = req.body.password
-        console.log(this.type);
-        this.model.model.find({ user: { $eq: this.type.user } }).then((data) => {
-            if ((this.type.user === data[0].user) && (this.type.password === data[0].password)) {
-                const payload = {
-                    check: true
+    async getUser(req: Request, res: Response) {
+        try {
+            const { user, password } = req.body
+            await loginModel.find({ user: { $eq: user } }).then((data) => {
+                if ((user === data[0].user) && (password === data[0].password)) {
+                    const payload = {
+                        check: true
+                    }
+                    const token = jsonwebtoken.sign(payload, this.key, { expiresIn: '15m' })
+                    res.cookie('token', token)
+                    res.cookie('user', data[0].user)
+                    res.json({ data: data, token: token })
+                } else {
+                    res.json({ error: 'Contrasena o usuario invalido' })
                 }
-                const token = jsonwebtoken.sign(payload, this.key, { expiresIn: '15m' })
-                res.json({ data:data, token:token })
-            } else {
-                res.json({ error: 'Contrasena o usuario invalido' })
-            }
-        })
+            })
+
+        } catch (error) {
+            res.send({ error: error })
+        }
     }
 
 }

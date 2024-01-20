@@ -1,13 +1,12 @@
 import mongoose from "mongoose";
+import IRegister from "../interfaces/register.interface";
 
-export default class schemaRegister {
+export default class SchemaRegister {
 
-    public registerSchema
-
-    public model
+    private _model: mongoose.Model<IRegister>;
 
     constructor() {
-        this.registerSchema = new mongoose.Schema({
+        const registerSchema = new mongoose.Schema<IRegister>({
             user: {
                 type: String,
                 required: true,
@@ -30,9 +29,12 @@ export default class schemaRegister {
             timestamps: true
         })
 
-        this.model = mongoose.model('user', this.registerSchema)
-
+        this._model = mongoose.model<IRegister>('user', registerSchema)
     }
-
-
+    
+    get model():mongoose.Model<IRegister>{
+        return this._model
+    }
 }
+
+export const registerModel = new SchemaRegister().model;
